@@ -8,32 +8,7 @@
 // http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
 
 
-uint32_t
-reflect(uint32_t data, uint8_t nBits)
-{
-    uint32_t  reflection = 0;
-
-
-    /*
-    * Reflect the data about the center bit.
-    */
-    for (uint8_t bit = 0; bit < nBits; ++bit)
-    {
-        /*
-        * If the LSB bit is set, set the reflection of it.
-        */
-        if (data & 0x01)
-        {
-            reflection |= (1 << ((nBits - 1) - bit));
-        }
-
-        data = (data >> 1);
-    }
-
-    return (reflection);
-
-}   /* reflect() */
-
+extern uint32_t reflect(uint32_t data, uint8_t nBits);
 
 template <class T>
 void CrcTableGenerator(T polynomial, T (&crcTable)[256])
@@ -141,7 +116,7 @@ void TestCRC(T calculatedCrc, T expecrtedCrc)
     }
 }
 
-int main()
+int main2()
 {
     uint8_t crcTable8bit[256];
     uint16_t crcTable16bit[256];
@@ -214,4 +189,6 @@ int main()
     TestCRC<uint32_t>(CalculateCRC<uint32_t>(crcTable32bit, message5, sizeof(message5), initValue32bit, xorValue32bit, true, true), 0xB0AE863D);
     TestCRC<uint32_t>(CalculateCRC<uint32_t>(crcTable32bit, message6, sizeof(message6), initValue32bit, xorValue32bit, true, true), 0x9CDEA29B);
     TestCRC<uint32_t>(CalculateCRC<uint32_t>(crcTable32bit, message7, sizeof(message7), initValue32bit, xorValue32bit, true, true), 0xFFFFFFFF);
+
+    return 0;
 }
