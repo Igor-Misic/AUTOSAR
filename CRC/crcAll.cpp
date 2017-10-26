@@ -104,9 +104,9 @@ T CalculateCRC(T(&crcTable)[256], const uint8_t *crc_DataPtr, uint32_t crc_Lengt
 }
 
 template <class T>
-void TestCRC(T calculatedCrc, T expecrtedCrc)
+void TestCRC(T calculatedCrc, T expectedCrc)
 {
-    if (expecrtedCrc != calculatedCrc)
+    if (expectedCrc != calculatedCrc)
     {
         printf("Error for CRC 0x%x\n", calculatedCrc);
     }
@@ -176,7 +176,7 @@ int main2()
     TestCRC<uint16_t>(CalculateCRC<uint16_t>(crcTable16bit, message6, sizeof(message6), initValue16bit, xorValue16bit, false, false), 0x0745);
     TestCRC<uint16_t>(CalculateCRC<uint16_t>(crcTable16bit, message7, sizeof(message7), initValue16bit, xorValue16bit, false, false), 0x1D0F);
 
-    //Ethernet CRC Calculation
+    //Ethernet CRC Calculation - CRC32
     uint32_t polynominal32bit   = 0x04C11DB7;
     uint32_t initValue32bit     = 0xFFFFFFFF;
     uint32_t xorValue32bit      = 0xFFFFFFFF;

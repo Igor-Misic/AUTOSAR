@@ -10,16 +10,16 @@
 
 extern uint32_t reflect(uint32_t data, uint8_t nBits);
 
-void Crc8TableGenerator(uint8_t polynomial, uint8_t crcTable[256])
+void Crc16TableGenerator(uint16_t polynomial, uint16_t crcTable[256])
 {
-    uint8_t remainder;
+    uint16_t remainder;
 
-    uint8_t topBit = 0x80;
+    uint16_t topBit = 0x8000;
     uint32_t ui32Dividend;
 
     for (ui32Dividend = 0; ui32Dividend < 256; ui32Dividend++)
     {
-        remainder = ui32Dividend;
+        remainder = ui32Dividend << 8;
 
         for (uint8_t bit = 0; bit < 8; bit++)
         {
@@ -41,17 +41,18 @@ void Crc8TableGenerator(uint8_t polynomial, uint8_t crcTable[256])
         {
             printf("\n");
         }
-        printf("0x%02xU, ", remainder);
+        printf("0x%04xU, ", remainder);
+
         */
 
     }
 }
 
-uint8_t CalculateCRC8(uint8_t crcTable[256], const uint8_t *crc_DataPtr, uint32_t crc_Length, uint8_t crc_InitialValue, uint8_t crc_XorValue, bool reflectedOutput, bool reflectedInput)
+uint16_t CalculateCRC16(uint16_t crcTable[256], const uint8_t *crc_DataPtr, uint32_t crc_Length, uint16_t crc_InitialValue, uint16_t crc_XorValue, bool reflectedOutput, bool reflectedInput)
 {
     uint32_t ui32Counter;
     uint8_t temp;
-    uint8_t crc = crc_InitialValue;
+    uint16_t crc = crc_InitialValue;
 
     for (ui32Counter = 0U; ui32Counter < crc_Length; ui32Counter++)
     {
@@ -64,27 +65,27 @@ uint8_t CalculateCRC8(uint8_t crcTable[256], const uint8_t *crc_DataPtr, uint32_
             temp = *crc_DataPtr;
         }
 
-        crc = crc ^ temp;
-        crc = crcTable[crc];
+        crc = (crc << 8) ^ crcTable[(uint8_t)((crc >> 8) ^ temp)];
         crc_DataPtr++;
+
     }
 
     crc ^= crc_XorValue;
     if (reflectedOutput)
     {
-        crc = reflect(crc, 8);
+        crc = reflect(crc, 16);
     }
     return crc;
 }
 
-void TestCRC8(uint8_t calculatedCrc, uint8_t expectedCrc)
+void TestCRC16(uint16_t calculatedCrc, uint16_t expectedCrc)
 {
     if (expectedCrc != calculatedCrc)
     {
-        printf("Error for CRC8 0x%x\n", calculatedCrc);
+        printf("Error for CRC16 0x%x\n", calculatedCrc);
     }
     else
     {
-        printf("CRC8 0x%02x OK!\n", calculatedCrc);
+        printf("CRC16 0x%02x OK!\n", calculatedCrc);
     }
 }
