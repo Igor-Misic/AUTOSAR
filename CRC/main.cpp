@@ -4,12 +4,15 @@
 
 extern uint8_t CalculateCRC8(uint8_t crcTable[256], const uint8_t *crc_DataPtr, uint32_t crc_Length, uint8_t crc_InitialValue, uint8_t crc_XorValue, bool reflectedOutput, bool reflectedInput);
 extern uint16_t CalculateCRC16(uint16_t crcTable[256], const uint8_t *crc_DataPtr, uint32_t crc_Length, uint16_t crc_InitialValue, uint16_t crc_XorValue, bool reflectedOutput, bool reflectedInput);
+extern uint32_t CalculateCRC32(uint32_t crcTable[256], const uint8_t *crc_DataPtr, uint32_t crc_Length, uint32_t crc_InitialValue, uint32_t crc_XorValue, bool reflectedOutput, bool reflectedInput);
 
 extern void Crc8TableGenerator(uint8_t polynomial, uint8_t crcTable[256]);
 extern void Crc16TableGenerator(uint16_t polynomial, uint16_t crcTable[256]);
+extern void Crc32TableGenerator(uint32_t polynomial, uint32_t crcTable[256]);
 
 extern void TestCRC8(uint8_t calculatedCrc, uint8_t expectedCrc);
 extern void TestCRC16(uint16_t calculatedCrc, uint16_t expectedCrc);
+extern void TestCRC32(uint32_t calculatedCrc, uint32_t expectedCrc);
 
 int main()
 {
@@ -70,6 +73,20 @@ int main()
     TestCRC16(CalculateCRC16(crcTable16bit, message5, sizeof(message5), initValue16bit, xorValue16bit, false, false), 0xF53F);
     TestCRC16(CalculateCRC16(crcTable16bit, message6, sizeof(message6), initValue16bit, xorValue16bit, false, false), 0x0745);
     TestCRC16(CalculateCRC16(crcTable16bit, message7, sizeof(message7), initValue16bit, xorValue16bit, false, false), 0x1D0F);
+
+    //Ethernet CRC Calculation - CRC32
+    uint32_t polynominal32bit = 0x04C11DB7;
+    uint32_t initValue32bit = 0xFFFFFFFF;
+    uint32_t xorValue32bit = 0xFFFFFFFF;
+    Crc32TableGenerator(polynominal32bit, crcTable32bit);
+
+    TestCRC32(CalculateCRC32(crcTable32bit, message1, sizeof(message1), initValue32bit, xorValue32bit, true, true), 0x2144DF1C);
+    TestCRC32(CalculateCRC32(crcTable32bit, message2, sizeof(message2), initValue32bit, xorValue32bit, true, true), 0x24AB9D77);
+    TestCRC32(CalculateCRC32(crcTable32bit, message3, sizeof(message3), initValue32bit, xorValue32bit, true, true), 0xB6C9B287);
+    TestCRC32(CalculateCRC32(crcTable32bit, message4, sizeof(message4), initValue32bit, xorValue32bit, true, true), 0x32A06212);
+    TestCRC32(CalculateCRC32(crcTable32bit, message5, sizeof(message5), initValue32bit, xorValue32bit, true, true), 0xB0AE863D);
+    TestCRC32(CalculateCRC32(crcTable32bit, message6, sizeof(message6), initValue32bit, xorValue32bit, true, true), 0x9CDEA29B);
+    TestCRC32(CalculateCRC32(crcTable32bit, message7, sizeof(message7), initValue32bit, xorValue32bit, true, true), 0xFFFFFFFF);
 
     return 0;
 }
